@@ -1,0 +1,102 @@
+T4C54 048:638.063   SEGGER J-Link V7.50a Log File
+T4C54 048:638.142   DLL Compiled: Jul  8 2021 18:16:52
+T4C54 048:638.158   Logging started @ 2023-03-14 02:02
+T4C54 048:638.172 - 32.765ms
+T4C54 048:638.192 JLINK_SetWarnOutHandler(...)
+T4C54 048:638.209 - 0.025ms
+T4C54 048:638.228 JLINK_OpenEx(...)
+T4C54 048:643.408   Firmware: J-Link ARM-OB STM32 compiled Aug 22 2012 19:52:04
+T4C54 048:644.407   Firmware: J-Link ARM-OB STM32 compiled Aug 22 2012 19:52:04
+T4C54 048:651.386   Hardware: V7.00
+T4C54 048:651.435   S/N: 20090929
+T4C54 048:651.456   OEM: SEGGER
+T4C54 048:651.479   Feature(s): RDI,FlashDL,FlashBP,JFlash,GDBFull
+T4C54 048:658.583   TELNET listener socket opened on port 19021
+T4C54 048:662.392   WEBSRV Starting webserver
+T4C54 048:662.517   WEBSRV Webserver running on local port 19080
+T4C54 048:662.541 - 24.322ms returns "O.K."
+T4C54 048:662.567 JLINK_GetEmuCaps()
+T4C54 048:662.582 - 0.021ms returns 0x88EA5833
+T4C54 048:662.598 JLINK_TIF_GetAvailable(...)
+T4C54 048:662.801 - 0.215ms
+T4C54 048:662.825 JLINK_SetErrorOutHandler(...)
+T4C54 048:662.839 - 0.020ms
+T4C54 048:662.861 JLINK_ExecCommand("ProjectFile = "F:\iot操作系统\代码\4-任务管理\02，任务管理\Project\RVMDK（uv5）\JLinkSettings.ini"", ...). 
+T4C54 048:664.405 - 1.559ms returns 0x00
+T4C54 048:665.391 JLINK_ExecCommand("Device = STM32F103VE", ...). 
+T4C54 048:665.666   Device "STM32F103VE" selected.
+T4C54 048:666.246 - 0.843ms returns 0x00
+T4C54 048:666.269 JLINK_ExecCommand("DisableConnectionTimeout", ...). 
+T4C54 048:666.286 - 0.008ms returns 0x01
+T4C54 048:666.302 JLINK_GetHardwareVersion()
+T4C54 048:666.316 - 0.021ms returns 70000
+T4C54 048:666.332 JLINK_GetDLLVersion()
+T4C54 048:666.345 - 0.020ms returns 75001
+T4C54 048:666.362 JLINK_GetOEMString(...)
+T4C54 048:666.377 JLINK_GetFirmwareString(...)
+T4C54 048:666.391 - 0.020ms
+T4C54 048:666.421 JLINK_GetDLLVersion()
+T4C54 048:666.435 - 0.021ms returns 75001
+T4C54 048:666.450 JLINK_GetCompileDateTime()
+T4C54 048:666.464 - 0.022ms
+T4C54 048:666.486 JLINK_GetFirmwareString(...)
+T4C54 048:666.500 - 0.021ms
+T4C54 048:666.519 JLINK_GetHardwareVersion()
+T4C54 048:666.532 - 0.020ms returns 70000
+T4C54 048:666.551 JLINK_GetSN()
+T4C54 048:666.565 - 0.021ms returns 20090929
+T4C54 048:666.583 JLINK_GetOEMString(...)
+T4C54 048:666.605 JLINK_TIF_Select(JLINKARM_TIF_SWD)
+T4C54 048:667.492 - 0.900ms returns 0x00
+T4C54 048:667.516 JLINK_HasError()
+T4C54 048:667.532 JLINK_SetSpeed(5000)
+T4C54 048:667.613 - 0.093ms
+T4C54 048:668.063 JLINK_HasError()
+T4C54 048:668.085 JLINK_SetResetType(JLINKARM_RESET_TYPE_NORMAL)
+T4C54 048:668.100 - 0.021ms returns JLINKARM_RESET_TYPE_NORMAL
+T4C54 048:668.116 JLINK_Reset()
+T4C54 048:668.402   InitTarget() start
+T4C54 048:668.431    J-Link Script File: Executing InitTarget()
+T4C54 049:186.406   Can not attach to CPU. Trying connect under reset.
+T4C54 049:753.408   Connecting to CPU via connect under reset failed.
+T4C54 049:804.410   InitTarget() end
+T4C54 049:866.655   InitTarget() start
+T4C54 049:866.698    J-Link Script File: Executing InitTarget()
+T4C54 050:386.404   Can not attach to CPU. Trying connect under reset.
+T4C54 050:952.837   Connecting to CPU via connect under reset failed.
+T4C54 051:003.910   InitTarget() end
+T4C54 051:003.963 - 2335.856ms
+T4C54 051:003.989 JLINK_GetId()
+T4C54 051:004.834   InitTarget() start
+T4C54 051:004.884    J-Link Script File: Executing InitTarget()
+T4C54 051:524.403   Can not attach to CPU. Trying connect under reset.
+T4C54 052:090.403   Connecting to CPU via connect under reset failed.
+T4C54 052:141.195   InitTarget() end
+T4C54 052:203.181   InitTarget() start
+T4C54 052:203.243    J-Link Script File: Executing InitTarget()
+T4C54 052:720.398   Can not attach to CPU. Trying connect under reset.
+T4C54 053:286.397   Connecting to CPU via connect under reset failed.
+T4C54 053:337.437   InitTarget() end
+T4C54 053:337.492 - 2333.512ms returns 0x00000000
+T4C54 053:337.520 JLINK_GetId()
+T4C54 053:337.827   InitTarget() start
+T4C54 053:337.872    J-Link Script File: Executing InitTarget()
+T4C54 053:851.396   Can not attach to CPU. Trying connect under reset.
+T4C54 054:419.398   Connecting to CPU via connect under reset failed.
+T4C54 054:469.687   InitTarget() end
+T4C54 054:531.708   InitTarget() start
+T4C54 054:531.773    J-Link Script File: Executing InitTarget()
+T4C54 055:046.815   Can not attach to CPU. Trying connect under reset.
+T4C54 055:612.815   Connecting to CPU via connect under reset failed.
+T4C54 055:663.950   InitTarget() end
+T4C54 055:664.000 - 2326.487ms returns 0x00000000
+T4C54 055:667.458 JLINK_GetFirmwareString(...)
+T4C54 055:667.495 - 0.044ms
+T038C 058:652.006 Looking for J-Link GUI Server exe at: C:\Keil_v5\ARM\Segger\JLinkGUIServer.exe
+T038C 058:652.228 Looking for J-Link GUI Server exe at: C:\Program Files\SEGGER\JLink\JLinkGUIServer.exe
+T038C 058:652.348 Forking J-Link GUI Server: C:\Program Files\SEGGER\JLink\JLinkGUIServer.exe
+T038C 058:690.138 J-Link GUI Server info: "J-Link GUI server V7.50a "
+T4C54 198:891.127 JLINK_Close()
+T4C54 198:907.255 - 16.159ms
+T4C54 198:907.295   
+T4C54 198:907.309   Closed
