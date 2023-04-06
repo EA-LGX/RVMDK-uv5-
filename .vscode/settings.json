@@ -4,6 +4,7 @@
         "lcdfont.h": "c",
         "lcd.h": "c",
         "stdlib.h": "c",
-        "delay.h": "c"
+        "delay.h": "c",
+        "sys.h": "c"
     }
 }
