@@ -1,2 +1,45 @@
-Load "..\\..\\Output\\Fire_LiteOS.axf" 
-Erase Done.Programming Done.Verify OK.Flash Load finished at 14:03:38
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'Fire_LiteOS'
+compiling main.c...
+..\..\User\main.c(153): warning:  #1293-D: assignment in condition
+  		while (!(keyTemp = KEY_Scan(1))); //阻塞，等待用户按键
+..\..\User\main.c(256): warning:  #1293-D: assignment in condition
+  		while (!(keyTemp = KEY_Scan(0))); //阻塞，等待按键按下并将按键值赋给keyTemp
+..\..\User\main.c(484): warning:  #1293-D: assignment in condition
+  		while (!(keyTemp = KEY_Scan(0))); //阻塞，等待按键按下并将按键值赋给keyTemp
+..\..\User\main.c(540): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "unsigned char *"
+  		if (NRF24L01_RxPacket(rx_buf) == 0) { //一旦接收到信息,则显示出来.
+..\..\User\main.c(544): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "unsigned char *"
+  			AddTXAddressToList(rx_buf);
+..\..\User\main.c(547): warning:  #185-D: dynamic initialization in unreachable code
+  	int breakFlag = 0;
+..\..\User\main.c(556): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+  			LCD_ShowString(1, 8 * 3, RX_ADDRESS_STRING);
+..\..\User\main.c(563): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+  			LCD_ShowString(2, 8 * 4, TX_ADDRESS_STRING);
+..\..\User\main.c(564): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+  			strcat(tx_buf, RX_ADDRESS_STRING);
+..\..\User\main.c(564): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
+  			strcat(tx_buf, RX_ADDRESS_STRING);
+..\..\User\main.c(569): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+  				LCD_ShowString(3, 8 * 3, tx_buf);
+..\..\User\main.c(584): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+  					LCD_ShowString(3, 8 * 3, rx_buf);
+..\..\User\main.c(627): warning:  #1293-D: assignment in condition
+  		while (!(keyTemp = KEY_Scan(0))) {//阻塞，用户按下之前，一直寻卡
+..\..\User\main.c(640): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+  					sprintf(&card_id[i * 2], "%02X", SN[i]);
+..\..\User\main.c(645): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+  				LCD_ShowString(120 + 16 * 2 + 8, 60, card_id);
+..\..\User\main.c(650): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+  				DealUpData(card_id, &NB_Send_buf[15], 22);
+..\..\User\main.c(676): warning:  #1293-D: assignment in condition
+  					while (keyTemp = KEY_Scan(0) != key5); //等待用户关门
+..\..\User\main.c(750): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+  		strcat(str, tmp);
+..\..\User\main.c: 18 warnings, 0 errors
+linking...
+Program Size: Code=39506 RO-data=5998 RW-data=456 ZI-data=4208  
+FromELF: creating hex file...
+"..\..\Output\Fire_LiteOS.axf" - 0 Error(s), 18 Warning(s).
+Build Time Elapsed:  00:00:02

@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>STM32F103VE</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.1.0.5</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00010000) IROM(0x08000000,0x00080000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -339,7 +339,7 @@
               <MiscControls>--diag_suppress=1,47,177,186,223,1295</MiscControls>
               <Define>STM32F10X_HD, USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Libraries\CMSIS;..\..\Libraries\CMSIS\Include;..\..\User;..\..\Libraries\FWlib\inc;..\..\User\led;..\..\LiteOS\arch\arm\arm-m\cortex-m3;..\..\LiteOS\arch\arm\arm-m\include;..\..\LiteOS\cmsis\1.0;..\..\LiteOS\cmsis\2.0;..\..\LiteOS\cmsis;..\..\LiteOS\kernel\include;..\..\LiteOS\kernel\base\include;..\..\LiteOS\kernel\extended\include;..\..\LiteOS\OS_CONFIG;..\..\User\Key;..\..\User\usart;..\..\User\lcd;..\..\User\delay;..\..\User\sys;..\..\User\spi</IncludePath>
+              <IncludePath>..\..\Libraries\CMSIS;..\..\Libraries\CMSIS\Include;..\..\User;..\..\Libraries\FWlib\inc;..\..\User\led;..\..\LiteOS\arch\arm\arm-m\cortex-m3;..\..\LiteOS\arch\arm\arm-m\include;..\..\LiteOS\cmsis\1.0;..\..\LiteOS\cmsis\2.0;..\..\LiteOS\cmsis;..\..\LiteOS\kernel\include;..\..\LiteOS\kernel\base\include;..\..\LiteOS\kernel\extended\include;..\..\LiteOS\OS_CONFIG;..\..\User\24l01;..\..\User\delay;..\..\User\gpio;..\..\User\Key;..\..\User\lcd;..\..\User\led;..\..\User\RC522;..\..\User\spi;..\..\User\sys;..\..\User\timer;..\..\User\tools;..\..\User\usart</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -564,19 +564,19 @@
               <FilePath>..\..\User\stm32f10x_it.h</FilePath>
             </File>
             <File>
-              <FileName>bsp_led.c</FileName>
+              <FileName>24l01.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\Led\bsp_led.c</FilePath>
+              <FilePath>..\..\User\24l01\24l01.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_key.c</FileName>
+              <FileName>gpio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\Key\bsp_key.c</FilePath>
+              <FilePath>..\..\User\gpio\gpio.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_usart.c</FileName>
+              <FileName>key.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\usart\bsp_usart.c</FilePath>
+              <FilePath>..\..\User\Key\key.c</FilePath>
             </File>
             <File>
               <FileName>lcd.c</FileName>
@@ -584,9 +584,9 @@
               <FilePath>..\..\User\lcd\lcd.c</FilePath>
             </File>
             <File>
-              <FileName>delay.c</FileName>
+              <FileName>RC522.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\delay\delay.c</FilePath>
+              <FilePath>..\..\User\RC522\RC522.c</FilePath>
             </File>
             <File>
               <FileName>spi.c</FileName>
@@ -597,6 +597,31 @@
               <FileName>sys.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\sys\sys.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\timer\timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>tools.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\tools\tools.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\usart\usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\delay\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\led\bsp_led.c</FilePath>
             </File>
           </Files>
         </Group>
