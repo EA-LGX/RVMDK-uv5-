@@ -110,32 +110,30 @@ void rc522();  // 6.RFID界面
 
 
 int main(void) {
-	GPIO_Configuration(); 		//GPIO初始化
-	delay_init(); 			 //延时初始化
-	Lcd_Init();  			 //LCD屏幕初始化
-	LCD_Clear(BLACK); 		 //清屏
-	Usart1_Init(115200); 	 //串口1初始化
-	Usart2_Init(115200); 	 //串口2初始化
-	Usart3_Init(9600);  	 //串口3初始化
-	Uart5_Init(115200);				//串口5初始化
-	NVIC_Configuration(); 	 //中断初始化  	
-	TIM3_Int_Init(999, 7199);  //定时器3初始化，100ms中断一次
-	Sensor_PWR_ON();  		//传感器上电
+	UINT32 uwRet = LOS_OK;  //定义一个任务创建的返回值，默认为创建成功
 
-	BACK_COLOR = BLACK;   //设置背景色
-	POINT_COLOR = GREEN;  //设置字体颜色
-	// 初始化阈值数组
-	strcat(&maxValue[0][0][0], "温度阈值");
-	strcat(&maxValue[0][1][0], "025.0");
-	strcat(&maxValue[1][0][0], "湿度阈值");
-	strcat(&maxValue[1][1][0], "030.0");
+	BSP_Init();  //板级初始化
 
-	LCD_DrawRectangle(0, 0, 320, 240);  //画矩形框
-	key_init();  //按键初始化
-	LCD_ShowString(320 - 8 * 14, 220, "202009517111");
-	LCD_Show_Chinese16x16(320 - 16 * 4, 200, "陆广兴");
+	/* LiteOS 内核初始化 */
+	uwRet = LOS_KernelInit();
+
+	if (uwRet != LOS_OK) {
+		printf("LiteOS 核心初始化失败！失败代码0x%X\n", uwRet);
+		return LOS_NOK;
+	}
+
+	/* 创建APP应用任务，所有的应用任务都可以放在这个函数里面 */
+	uwRet = AppTaskCreate();
+	if (uwRet != LOS_OK) {
+		printf("AppTaskCreate创建任务失败！失败代码0x%X\n", uwRet);
+		return LOS_NOK;
+	}
+
+	/* 开启LiteOS任务调度 */
+	LOS_Start();
+
 	while (1) {
-		mainMenu();
+		//mainMenu();
 	}
 }
 
@@ -354,93 +352,43 @@ void collectSensorData() {
 	uploadTimeFlag = Count_timer;  // 标记当前时间,采集时间标志
 	collectTimeFlag = Count_timer;  // 标记当前时间，上传时间标志
 	while ((keyTemp = KEY_Scan(0)) == 0) {// 按任意键退出数据采集界面
-		//	4s采集一次数据但不上传
-		if (Count_timer - collectTimeFlag > 40) { // 4S定时器  当前时间戳减去标记的时间戳获取时间差
+		//	0s采集一次数据但不上传
+		// if (Count_timer - collectTimeFlag > 40) { // 4S定时器  当前时间戳减去标记的时间戳获取时间差
 			//开始采集数据，点亮LED
-			Y_LED_ON;
-			LCD_Fill(20 + 8 * 19 + 8 * 5, 10, 20 + 8 * 19 + 8 * 7, 10 + 16, YELLOW);
-			USART3TxData_hex(Read_Humiture_CMD, 8);
-			if ((Flag_Usart3_Receive) && (!Count_Timer3_value_USART3_receive_timeout)) {
-				Flag_Usart3_Receive = 0;
-				Tem_value = USART3_RX_BUF[3];
-				Tem_value <<= 8;
-				Tem_value |= USART3_RX_BUF[4];
-				Hum_value = USART3_RX_BUF[5];
-				Hum_value <<= 8;
-				Hum_value |= USART3_RX_BUF[6];
-				CLR_Buf3();
-				Temp_value_str[0] = 't';
-				Tem_value_int = Tem_value;
-				if (Tem_value_int > 0) {
-					Temp_value_str[1] = '+';
-					Temp_value_str[2] = (char)(Tem_value / 100 + '0');
-					Temp_value_str[3] = (char)(Tem_value % 100 / 10 + '0');
-					Temp_value_str[4] = '.';
-					Temp_value_str[5] = (char)(Tem_value % 10 + '0');
-				}
-				if (Tem_value_int < 0) {
-					Tem_value_int = (~Tem_value_int) + 1;
-					Temp_value_str[1] = '-';
-					Temp_value_str[2] = (char)(Tem_value / 100 + '0');
-					Temp_value_str[3] = (char)(Tem_value % 100 / 10 + '0');
-					Temp_value_str[4] = '.';
-					Temp_value_str[5] = (char)(Tem_value % 10 + '0');
-				}
-				Temp_value_str[6] = 0;
-				Hum_value_str[0] = 'h';
-				Hum_value_str[1] = (char)(Hum_value / 100 + '0');
-				Hum_value_str[2] = (char)(Hum_value % 100 / 10 + '0');
-				Hum_value_str[3] = '.';
-				Hum_value_str[4] = (char)(Hum_value % 10 + '0');
-				Hum_value_str[5] = 0;
-
-				POINT_COLOR = RED;  //笔画为红色
-				//判断湿度是否大于阈值
-				if (atof(&Temp_value_str[2]) > maxTemp) {//atof()函数将字符串转换为浮点数
-					LCD_ShowString(20 + 8 * 27, 120, "Warning");
-				}
-				else {
-					LCD_Fill(20 + 8 * 27, 120, 20 + 8 * 35, 120 + 16, BLACK);
-				}
-				// 判断温度是否大于阈值
-				if (atof(&Hum_value_str[1]) > maxHum) {
-					LCD_ShowString(20 + 8 * 27, 160, "Warning");
-				}
-				else {
-					LCD_Fill(20 + 8 * 27, 160, 20 + 16 * 16, 160 + 16, BLACK);
-				}
-
-				POINT_COLOR = YELLOW;  //笔画为黄色
-				LCD_ShowString(20 + 16 * 3, 120, &Temp_value_str[1]);
-				LCD_ShowString(20 + 16 * 3, 160, &Hum_value_str[1]);
-			}
-			else {
-				// POINT_COLOR = YELLOW;
-				// LCD_ShowString(20 + 16 * 3, 120, "-----");
-				// LCD_ShowString(20 + 16 * 3, 160, "-----");
-				// LCD_ShowString(20 + 64 + 16 * 3, 120, "-----");
-				// LCD_ShowString(20 + 64 + 16 * 3, 160, "-----");
-				Temp_value_str[1] = 0;
-				Hum_value_str[1] = 0;
-			}
-
-			// 采集完毕，熄灭LED灯，重新标记当前时间
-			Y_LED_OFF;
-			LCD_Fill(20 + 8 * 19 + 8 * 5, 10, 20 + 8 * 19 + 8 * 7, 10 + 16, BLACK);
-			collectTimeFlag = Count_timer;
+		LOS_SemPend(BinarySem_Handle, LOS_WAIT_FOREVER);  //获取二值信号量 BinarySem_Handle，没获取到则一直等待	
+		POINT_COLOR = RED;  //笔画为红色
+		//判断湿度是否大于阈值
+		if (atof(&Temp_value_str[2]) > maxTemp) {//atof()函数将字符串转换为浮点数
+			LCD_ShowString(20 + 8 * 27, 120, "Warning");
 		}
 		else {
-			tmp[0] = 0;
-			sprintf(tmp, "%2d", (40 - (Count_timer - collectTimeFlag)) / 10);
-			POINT_COLOR = GREEN;		//笔画为绿色	
-			LCD_ShowString(20, 10, "Collecting data in ");
-			POINT_COLOR = YELLOW;		//笔画为红色	
-			LCD_ShowString(20 + 8 * 20, 10, &tmp[0]);
-			POINT_COLOR = GREEN;		//笔画为绿色	
-			LCD_ShowString(20 + 8 * 20 + 8 * 3, 10, "s");
+			LCD_Fill(20 + 8 * 27, 120, 20 + 8 * 35, 120 + 16, BLACK);
 		}
+		// 判断温度是否大于阈值
+		if (atof(&Hum_value_str[1]) > maxHum) {
+			LCD_ShowString(20 + 8 * 27, 160, "Warning");
+		}
+		else {
+			LCD_Fill(20 + 8 * 27, 160, 20 + 16 * 16, 160 + 16, BLACK);
+		}
+		POINT_COLOR = YELLOW;  //笔画为黄色
+		LCD_ShowString(20 + 16 * 3, 120, &Temp_value_str[1]);
+		LCD_ShowString(20 + 16 * 3, 160, &Hum_value_str[1]);
 
-		//	20s数据上报
+		//collectTimeFlag = Count_timer;
+		//}
+		// else {
+		// 	tmp[0] = 0;
+		// 	sprintf(tmp, "%2d", (40 - (Count_timer - collectTimeFlag)) / 10);
+		// 	POINT_COLOR = GREEN;		//笔画为绿色	
+		// 	LCD_ShowString(20, 10, "Collecting data in ");
+		// 	POINT_COLOR = YELLOW;		//笔画为红色	
+		// 	LCD_ShowString(20 + 8 * 20, 10, &tmp[0]);
+		// 	POINT_COLOR = GREEN;		//笔画为绿色	
+		// 	LCD_ShowString(20 + 8 * 20 + 8 * 3, 10, "s");
+		// }
+
+		//20s数据上报
 		if (Count_timer - uploadTimeFlag > 200) { // 20S定时器  当前时间戳减去标记的时间戳获取时间差
 			// 开始上报数据，点亮LED
 			G_LED_ON;
@@ -483,6 +431,9 @@ void collectSensorData() {
 			POINT_COLOR = GREEN;		//笔画为绿色
 			LCD_ShowString(20 + 8 * 20 + 8 * 3, 30, "s");
 		}
+
+		LOS_SemPost(BinarySem_Handle);    //给出二值信号量 xSemaphore	
+		LOS_TaskYield();  	//放弃剩余时间片，进行一次任务切换		
 	}
 }
 
@@ -860,4 +811,201 @@ void AddMeunChineseItem(char* item) {
 		LCD_Show_Chinese16x16(170 + 20, 30 + 16 * ((mainMenuCount % 6) * 2), item);
 	}
 	mainMenuCount++;
+}
+
+
+
+
+/** LiteOS 代码 */
+
+/*********************************************************************************
+  * @ 函数名  ： AppTaskCreate
+  * @ 功能说明： 任务创建，为了方便管理，所有的任务创建函数都可以放在这个函数里面
+  * @ 参数    ： 无
+  * @ 返回值  ： 无
+  ********************************************************************************/
+static UINT32 AppTaskCreate(void) {
+	/* 定义一个返回类型变量，初始化为LOS_OK */
+	UINT32 uwRet = LOS_OK;
+
+	/* 创建一个计数信号量，初始化计数值为5*/
+	uwRet = LOS_BinarySemCreate(1, &BinarySem_Handle);
+	if (uwRet != LOS_OK) {
+		printf("二值信号量创建失败！失败代码0x%X\n", uwRet);
+	}
+
+	uwRet = Creat_Collect_Task();
+	if (uwRet != LOS_OK) {
+		printf("Collect_Task任务创建失败！失败代码0x%X\n", uwRet);
+		return uwRet;
+	}
+
+	uwRet = Creat_Show_Task();
+	if (uwRet != LOS_OK) {
+		printf("Show_Task任务创建失败！失败代码0x%X\n", uwRet);
+		return uwRet;
+	}
+
+	return LOS_OK;
+}
+
+/******************************************************************
+  * @ 函数名  ： Creat_Collect_Task
+  * @ 功能说明： 创建Pend_Task任务
+  * @ 参数    ：
+  * @ 返回值  ： 无
+  ******************************************************************/
+static UINT32 Creat_Collect_Task() {
+	//定义一个创建任务的返回类型，初始化为创建成功的返回值
+	UINT32 uwRet = LOS_OK;
+
+	//定义一个用于创建任务的参数结构体
+	TSK_INIT_PARAM_S task_init_param;
+
+	task_init_param.usTaskPrio = 3;	/* 任务优先级，数值越小，优先级越高 */
+	task_init_param.pcName = "Collect_Task";/* 任务名 */
+	task_init_param.pfnTaskEntry = (TSK_ENTRY_FUNC)Collect_Task;/* 任务函数入口 */
+	task_init_param.uwStackSize = 1024;		/* 堆栈大小 */
+
+	uwRet = LOS_TaskCreate(&Collect_Task_Handle, &task_init_param);/* 创建任务 */
+	return uwRet;
+}
+
+
+/******************************************************************
+  * @ 函数名  ： Creat_Collect_Task
+  * @ 功能说明： 创建Pend_Task任务
+  * @ 参数    ：
+  * @ 返回值  ： 无
+  ******************************************************************/
+static UINT32 Creat_Show_Task() {
+	//定义一个创建任务的返回类型，初始化为创建成功的返回值
+	UINT32 uwRet = LOS_OK;
+
+	//定义一个用于创建任务的参数结构体
+	TSK_INIT_PARAM_S task_init_param;
+
+	task_init_param.usTaskPrio = 5;	/* 任务优先级，数值越小，优先级越高 */
+	task_init_param.pcName = "Show_Task";/* 任务名 */
+	task_init_param.pfnTaskEntry = (TSK_ENTRY_FUNC)Show_Task;/* 任务函数入口 */
+	task_init_param.uwStackSize = 1024;		/* 堆栈大小 */
+
+	uwRet = LOS_TaskCreate(&Show_Task_Handle, &task_init_param);/* 创建任务 */
+	return uwRet;
+}
+
+/******************************************************************
+  * @ 函数名  ： Collect_Task
+  * @ 功能说明： Collect_Task任务实现
+  * @ 参数    ： NULL
+  * @ 返回值  ： NULL
+  *****************************************************************/
+static void Collect_Task(void) {
+	UINT32 uwRet = LOS_OK;
+	while (1) {
+		LOS_SemPend(BinarySem_Handle, LOS_WAIT_FOREVER);  //获取二值信号量 BinarySem_Handle，没获取到则一直等待		
+		Y_LED_ON;
+		LCD_Fill(20 + 8 * 19 + 8 * 5, 10, 20 + 8 * 19 + 8 * 7, 10 + 16, YELLOW);
+		USART3TxData_hex(Read_Humiture_CMD, 8);
+		if ((Flag_Usart3_Receive) && (!Count_Timer3_value_USART3_receive_timeout)) {
+			Flag_Usart3_Receive = 0;
+			Tem_value = USART3_RX_BUF[3];
+			Tem_value <<= 8;
+			Tem_value |= USART3_RX_BUF[4];
+			Hum_value = USART3_RX_BUF[5];
+			Hum_value <<= 8;
+			Hum_value |= USART3_RX_BUF[6];
+			CLR_Buf3();
+			Temp_value_str[0] = 't';
+			Tem_value_int = Tem_value;
+			if (Tem_value_int > 0) {
+				Temp_value_str[1] = '+';
+				Temp_value_str[2] = (char)(Tem_value / 100 + '0');
+				Temp_value_str[3] = (char)(Tem_value % 100 / 10 + '0');
+				Temp_value_str[4] = '.';
+				Temp_value_str[5] = (char)(Tem_value % 10 + '0');
+			}
+			if (Tem_value_int < 0) {
+				Tem_value_int = (~Tem_value_int) + 1;
+				Temp_value_str[1] = '-';
+				Temp_value_str[2] = (char)(Tem_value / 100 + '0');
+				Temp_value_str[3] = (char)(Tem_value % 100 / 10 + '0');
+				Temp_value_str[4] = '.';
+				Temp_value_str[5] = (char)(Tem_value % 10 + '0');
+			}
+			Temp_value_str[6] = 0;
+			Hum_value_str[0] = 'h';
+			Hum_value_str[1] = (char)(Hum_value / 100 + '0');
+			Hum_value_str[2] = (char)(Hum_value % 100 / 10 + '0');
+			Hum_value_str[3] = '.';
+			Hum_value_str[4] = (char)(Hum_value % 10 + '0');
+			Hum_value_str[5] = 0;
+		}
+		else {
+			Temp_value_str[1] = 0;
+			Hum_value_str[1] = 0;
+			printf("\r\n采集失败\r\n");
+		}
+		// 采集完毕，熄灭LED灯，重新标记当前时间
+		Y_LED_OFF;
+		LCD_Fill(20 + 8 * 19 + 8 * 5, 10, 20 + 8 * 19 + 8 * 7, 10 + 16, BLACK);
+		LOS_TaskDelay(100);        			/* 延时100ms */
+		LOS_SemPost(BinarySem_Handle);    //给出二值信号量 xSemaphore		
+		LOS_TaskYield();  									//放弃剩余时间片，进行一次任务切换	
+	}
+}
+
+/******************************************************************
+  * @ 函数名  ： Show_Task
+  * @ 功能说明： Show_Task任务实现
+  * @ 参数    ： NULL
+  * @ 返回值  ： NULL
+  *****************************************************************/
+static void Show_Task(void) {
+	UINT32 uwRet = LOS_OK;
+	while (1) {
+		// LOS_SemPend(BinarySem_Handle, LOS_WAIT_FOREVER);  //获取二值信号量 BinarySem_Handle，没获取到则一直等待		
+		collectSensorData();
+		// LOS_SemPost(BinarySem_Handle);    //给出二值信号量 xSemaphore	
+		// LOS_TaskYield();  									//放弃剩余时间片，进行一次任务切换						
+	}
+}
+
+/*******************************************************************
+  * @ 函数名  ： BSP_Init
+  * @ 功能说明： 板级外设初始化，所有板子上的初始化均可放在这个函数里面
+  * @ 参数    ：
+  * @ 返回值  ： 无
+  ******************************************************************/
+static void BSP_Init(void) {
+	/*
+	 * STM32中断优先级分组为4，即4bit都用来表示抢占优先级，范围为：0~15
+	 * 优先级分组只需要分组一次即可，以后如果有其他的任务需要用到中断，
+	 * 都统一用这个优先级分组，千万不要再分组，切忌。
+	 */
+
+	GPIO_Configuration(); 		//GPIO初始化
+	delay_init(); 			 //延时初始化
+	Lcd_Init();  			 //LCD屏幕初始化
+	LCD_Clear(BLACK); 		 //清屏
+	Usart1_Init(115200); 	 //串口1初始化
+	Usart2_Init(115200); 	 //串口2初始化
+	Usart3_Init(9600);  	 //串口3初始化
+	Uart5_Init(115200);				//串口5初始化
+	NVIC_Configuration(); 	 //中断初始化  	
+	TIM3_Int_Init(999, 7199);  //定时器3初始化，100ms中断一次
+	Sensor_PWR_ON();  		//传感器上电
+
+	BACK_COLOR = BLACK;   //设置背景色
+	POINT_COLOR = GREEN;  //设置字体颜色
+	// 初始化阈值数组
+	strcat(&maxValue[0][0][0], "温度阈值");
+	strcat(&maxValue[0][1][0], "025.0");
+	strcat(&maxValue[1][0][0], "湿度阈值");
+	strcat(&maxValue[1][1][0], "030.0");
+
+	LCD_DrawRectangle(0, 0, 320, 240);  //画矩形框
+	key_init();  //按键初始化
+	LCD_ShowString(320 - 8 * 14, 220, "202009517111");
+	LCD_Show_Chinese16x16(320 - 16 * 4, 200, "陆广兴");
 }
