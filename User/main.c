@@ -1,3 +1,5 @@
+/** 融合LiteOS分支 */
+
 /* LiteOS 头文件 */
 #include "los_sys.h"
 #include "los_task.ph"
@@ -40,11 +42,6 @@ static void Collect_Task(void);
 static void Post_Task(void);
 
 static void BSP_Init(void);
-
-
-/* 板载相关初始化 */
-BSP_Init();
-
 
 #define deviceNum 2	// 阈值的选项只能在0-1之间变化,当前只接入温湿度传感器
 #define valueLen  5	// 数据长度  5个字符，例如：025.0
