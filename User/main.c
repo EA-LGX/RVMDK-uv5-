@@ -20,6 +20,7 @@
 #include "rc522.h"
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
  /* 定义任务句柄 */
 UINT32 Pend_Task_Handle;
@@ -129,12 +130,9 @@ int main(void) {
 		return LOS_NOK;
 	}
 
-	/* 开启LiteOS任务调度 */
-	LOS_Start();
-
-	while (1) {
-		//mainMenu();
-	}
+	//while (1) {
+	mainMenu();
+	//}
 }
 
 // 主菜单
@@ -225,7 +223,10 @@ void mainMenu() {
 				break;
 			}
 			else if (arrow == 2) {
-				collectSensorData();  //采集数据界面
+				/* 开启LiteOS任务调度 */
+				LCD_Clear(BLACK);
+				LOS_Start();
+				//collectSensorData();  //采集数据界面
 				break;
 			}
 			else if (arrow == 3) {
@@ -354,7 +355,8 @@ void collectSensorData() {
 	while ((keyTemp = KEY_Scan(0)) == 0) {// 按任意键退出数据采集界面
 		//	0s采集一次数据但不上传
 		// if (Count_timer - collectTimeFlag > 40) { // 4S定时器  当前时间戳减去标记的时间戳获取时间差
-			//开始采集数据，点亮LED
+		//开始采集数据，点亮LED
+		G_LED_OFF;
 		LOS_SemPend(BinarySem_Handle, LOS_WAIT_FOREVER);  //获取二值信号量 BinarySem_Handle，没获取到则一直等待	
 		POINT_COLOR = RED;  //笔画为红色
 		//判断湿度是否大于阈值
@@ -431,7 +433,8 @@ void collectSensorData() {
 			POINT_COLOR = GREEN;		//笔画为绿色
 			LCD_ShowString(20 + 8 * 20 + 8 * 3, 30, "s");
 		}
-
+		LOS_TaskDelay(400);        			/* 延时400ms */
+		G_LED_OFF;
 		LOS_SemPost(BinarySem_Handle);    //给出二值信号量 xSemaphore	
 		LOS_TaskYield();  	//放弃剩余时间片，进行一次任务切换		
 	}
@@ -904,54 +907,40 @@ static void Collect_Task(void) {
 	UINT32 uwRet = LOS_OK;
 	while (1) {
 		LOS_SemPend(BinarySem_Handle, LOS_WAIT_FOREVER);  //获取二值信号量 BinarySem_Handle，没获取到则一直等待		
-		Y_LED_ON;
-		LCD_Fill(20 + 8 * 19 + 8 * 5, 10, 20 + 8 * 19 + 8 * 7, 10 + 16, YELLOW);
-		USART3TxData_hex(Read_Humiture_CMD, 8);
-		if ((Flag_Usart3_Receive) && (!Count_Timer3_value_USART3_receive_timeout)) {
-			Flag_Usart3_Receive = 0;
-			Tem_value = USART3_RX_BUF[3];
-			Tem_value <<= 8;
-			Tem_value |= USART3_RX_BUF[4];
-			Hum_value = USART3_RX_BUF[5];
-			Hum_value <<= 8;
-			Hum_value |= USART3_RX_BUF[6];
-			CLR_Buf3();
-			Temp_value_str[0] = 't';
-			Tem_value_int = Tem_value;
-			if (Tem_value_int > 0) {
-				Temp_value_str[1] = '+';
-				Temp_value_str[2] = (char)(Tem_value / 100 + '0');
-				Temp_value_str[3] = (char)(Tem_value % 100 / 10 + '0');
-				Temp_value_str[4] = '.';
-				Temp_value_str[5] = (char)(Tem_value % 10 + '0');
-			}
-			if (Tem_value_int < 0) {
-				Tem_value_int = (~Tem_value_int) + 1;
-				Temp_value_str[1] = '-';
-				Temp_value_str[2] = (char)(Tem_value / 100 + '0');
-				Temp_value_str[3] = (char)(Tem_value % 100 / 10 + '0');
-				Temp_value_str[4] = '.';
-				Temp_value_str[5] = (char)(Tem_value % 10 + '0');
-			}
-			Temp_value_str[6] = 0;
-			Hum_value_str[0] = 'h';
-			Hum_value_str[1] = (char)(Hum_value / 100 + '0');
-			Hum_value_str[2] = (char)(Hum_value % 100 / 10 + '0');
-			Hum_value_str[3] = '.';
-			Hum_value_str[4] = (char)(Hum_value % 10 + '0');
-			Hum_value_str[5] = 0;
-		}
-		else {
-			Temp_value_str[1] = 0;
-			Hum_value_str[1] = 0;
-			printf("\r\n采集失败\r\n");
-		}
-		// 采集完毕，熄灭LED灯，重新标记当前时间
-		Y_LED_OFF;
-		LCD_Fill(20 + 8 * 19 + 8 * 5, 10, 20 + 8 * 19 + 8 * 7, 10 + 16, BLACK);
-		LOS_TaskDelay(100);        			/* 延时100ms */
+		LCD_Fill(50 + 8 * 19 + 8 * 5, 10, 50 + 8 * 19 + 8 * 7, 10 + 16, GREEN);
+
+		// 生成100~999的随机数
+			// 以当前时间作为随机数生成器的种子
+		static int temp = 300;
+		static int humi = 400;
+		do {
+			//temp 在-3~3之间波动
+			srand((unsigned int)RTC_GetCounter());
+			temp += rand() % 40 - 20;
+			LOS_TaskDelay(300);        			/* 延时10ms */
+			//humi 在-3~3之间波动
+			srand((unsigned int)RTC_GetCounter());
+			humi += rand() % 50 - 25;
+		} while (temp > 999 || temp < 100 || humi > 999 || humi < 100);
+		Temp_value_str[0] = 't';
+		Temp_value_str[1] = '+';
+		Temp_value_str[2] = (char)(temp / 100 + '0');
+		Temp_value_str[3] = (char)(temp % 100 / 10 + '0');
+		Temp_value_str[4] = '.';
+		Temp_value_str[5] = (char)(temp % 10 + '0');
+		Temp_value_str[6] = 0;
+
+		Hum_value_str[0] = 'h';
+		Hum_value_str[1] = (char)(humi / 100 + '0');
+		Hum_value_str[2] = (char)(humi % 100 / 10 + '0');
+		Hum_value_str[3] = '.';
+		Hum_value_str[4] = (char)(humi % 10 + '0');
+		Hum_value_str[5] = 0;
+
+		//LOS_TaskDelay(100);        			/* 延时100ms */
+		LCD_Fill(50 + 8 * 19 + 8 * 5, 10, 50 + 8 * 19 + 8 * 7, 10 + 16, BLACK);
 		LOS_SemPost(BinarySem_Handle);    //给出二值信号量 xSemaphore		
-		LOS_TaskYield();  									//放弃剩余时间片，进行一次任务切换	
+		LOS_TaskYield();  				//放弃剩余时间片，进行一次任务切换	
 	}
 }
 
@@ -963,11 +952,69 @@ static void Collect_Task(void) {
   *****************************************************************/
 static void Show_Task(void) {
 	UINT32 uwRet = LOS_OK;
+	char tmp[6] = { 0 };
+	int n = 3; //发送失败重发次数
+	TIM_Cmd(TIM3, ENABLE); // 开启定时器3
+	LCD_Clear(BLACK); //清屏
+	LCD_Show_Chinese16x16(120, 60, "温湿度");
+	LCD_Show_Chinese16x16(20 + 16 * 4, 100, "当前        阈值");
+	LCD_Show_Chinese16x16(20, 120, "温度：      ℃          ℃");
+	LCD_Show_Chinese16x16(20, 160, "湿度：      ％          ％");
+	maxTemp = atof(&maxValue[0][1][0]);
+	maxHum = atof(&maxValue[1][1][0]);
+	tmp[0] = 0;
+	POINT_COLOR = RED;		//笔画为红色	
+	sprintf(tmp, "%.1f", maxTemp);
+	LCD_ShowString(20 + 16 * 3 + 12 * 8, 120, &tmp[0]);
+	tmp[0] = 0;
+	sprintf(tmp, "%.1f", maxHum);
+	LCD_ShowString(20 + 16 * 3 + 12 * 8, 160, &tmp[0]);
+	uploadTimeFlag = Count_timer;  // 标记当前时间,采集时间标志
+	collectTimeFlag = Count_timer;  // 标记当前时间，上传时间标志
 	while (1) {
-		// LOS_SemPend(BinarySem_Handle, LOS_WAIT_FOREVER);  //获取二值信号量 BinarySem_Handle，没获取到则一直等待		
-		collectSensorData();
-		// LOS_SemPost(BinarySem_Handle);    //给出二值信号量 xSemaphore	
-		// LOS_TaskYield();  									//放弃剩余时间片，进行一次任务切换						
+		LOS_SemPend(BinarySem_Handle, LOS_WAIT_FOREVER);  //获取二值信号量 BinarySem_Handle，没获取到则一直等待		
+		POINT_COLOR = YELLOW;	//画笔为黄色
+		LCD_Fill(20 + 8 * 19 + 8 * 5, 10, 20 + 8 * 19 + 8 * 7, 10 + 16, YELLOW);
+
+		//判断湿度是否大于阈值
+		POINT_COLOR = RED;  //笔画为红色
+		if (atof(&Temp_value_str[2]) > maxTemp) {//atof()函数将字符串转换为浮点数
+			LCD_ShowString(20 + 8 * 27, 120, "Warning");
+		}
+		else {
+			LCD_Fill(20 + 8 * 27, 120, 20 + 8 * 35, 120 + 16, BLACK);
+		}
+		// 判断温度是否大于阈值
+		if (atof(&Hum_value_str[1]) > maxHum) {
+			LCD_ShowString(20 + 8 * 27, 160, "Warning");
+		}
+		else {
+			LCD_Fill(20 + 8 * 27, 160, 20 + 16 * 16, 160 + 16, BLACK);
+		}
+		POINT_COLOR = YELLOW;  //笔画为黄色
+		LCD_ShowString(20 + 16 * 3, 120, &Temp_value_str[1]);
+		LCD_ShowString(20 + 16 * 3, 160, &Hum_value_str[1]);
+		LOS_TaskDelay(1500);        			/* 延时5000ms */
+		LCD_Fill(20 + 8 * 19 + 8 * 5, 10, 20 + 8 * 19 + 8 * 7, 10 + 16, BLACK);
+
+		// 开始上报数据，点亮LED
+		LCD_Fill(8 * 19 + 4 * 5, 10, 8 * 19 + 8 * 7 - 10, 10 + 16, RED);
+		USART1TxStr("NBIOT module is sending data:");
+		Send_data_buf[0] = 0;
+		strcat(Send_data_buf, &Temp_value_str[1]);  // 从下标1开始，即去掉t+25.0中的t,只要+25.0
+		strcat(Send_data_buf, &Hum_value_str[1]);  // 从下标1开始，即去掉h50.0中的h,只要50.0
+		USART1TxStr(Send_data_buf);   // 拼接后数据部分 = +25.050.5
+		strcpy((char*)NB_Send_buf, "AT+QLWDATASEND=");
+		DealUpData(Send_data_buf, &NB_Send_buf[15], 20);  //20为电信云服务ID
+		USART2TxStr((char*)NB_Send_buf);
+		LCD_ShowString(8 * 2, 16 * 12, "send....");
+		// 上报完毕，熄灭LED灯，重新标记当前时间
+		LOS_TaskDelay(2000);        			/* 延时5000ms */
+		LCD_Fill(8 * 19 + 4 * 5, 10, 8 * 19 + 8 * 7 - 10, 10 + 16, BLACK);
+		CLR_Buf2();
+
+		LOS_SemPost(BinarySem_Handle);    //给出二值信号量 xSemaphore	
+		LOS_TaskYield();  	//放弃剩余时间片，进行一次任务切换						
 	}
 }
 

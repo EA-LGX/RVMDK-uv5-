@@ -102,7 +102,6 @@ bool Wait_Str1_Str2_x_100ms(char uartx, char and_or, char str_NO, char* str1, ch
         USARTx_RX_BUF = (char*)&USART3_RX_BUF[0];
         LEN = USART_REC_LEN;
         break;
-
     }
     Count_time_wait_ok = time_x_100ms;
     while (!Flag_receive_right && Count_time_wait_ok) {

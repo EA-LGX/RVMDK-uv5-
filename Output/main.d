@@ -66,3 +66,4 @@
 ..\..\output\main.o: ..\..\User\tools\tools.h
 ..\..\output\main.o: ..\..\User\24l01\24l01.h
 ..\..\output\main.o: ..\..\User\RC522\rc522.h
+..\..\output\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h

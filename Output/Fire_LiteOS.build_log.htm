@@ -21,54 +21,54 @@ Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.9.0
 Dialog DLL:      TCM.DLL V1.53.0.0
  
 <h2>Project:</h2>
-D:\Desktop\LiteOS操作系统\课设融合NBIOT\Project\RVMDK（uv5）\Fire_LiteOS.uvprojx
+d:\Desktop\LiteOS操作系统\课设融合NBIOT\Project\RVMDK（uv5）\Fire_LiteOS.uvprojx
 Project File Date:  06/12/2023
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Fire_LiteOS'
 compiling main.c...
-..\..\User\main.c(176): warning:  #1293-D: assignment in condition
+..\..\User\main.c(174): warning:  #1293-D: assignment in condition
   		while (!(keyTemp = KEY_Scan(1))); //阻塞，等待用户按键
-..\..\User\main.c(279): warning:  #1293-D: assignment in condition
+..\..\User\main.c(280): warning:  #1293-D: assignment in condition
   		while (!(keyTemp = KEY_Scan(0))); //阻塞，等待按键按下并将按键值赋给keyTemp
-..\..\User\main.c(460): warning:  #1293-D: assignment in condition
+..\..\User\main.c(463): warning:  #1293-D: assignment in condition
   		while (!(keyTemp = KEY_Scan(0))); //阻塞，等待按键按下并将按键值赋给keyTemp
-..\..\User\main.c(516): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "unsigned char *"
+..\..\User\main.c(519): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "unsigned char *"
   		if (NRF24L01_RxPacket(rx_buf) == 0) { //一旦接收到信息,则显示出来.
-..\..\User\main.c(520): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "unsigned char *"
+..\..\User\main.c(523): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "unsigned char *"
   			AddTXAddressToList(rx_buf);
-..\..\User\main.c(523): warning:  #185-D: dynamic initialization in unreachable code
+..\..\User\main.c(526): warning:  #185-D: dynamic initialization in unreachable code
   	int breakFlag = 0;
-..\..\User\main.c(532): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\..\User\main.c(535): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
   			LCD_ShowString(1, 8 * 3, RX_ADDRESS_STRING);
-..\..\User\main.c(539): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\..\User\main.c(542): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
   			LCD_ShowString(2, 8 * 4, TX_ADDRESS_STRING);
-..\..\User\main.c(540): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\..\User\main.c(543): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
   			strcat(tx_buf, RX_ADDRESS_STRING);
-..\..\User\main.c(540): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
+..\..\User\main.c(543): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
   			strcat(tx_buf, RX_ADDRESS_STRING);
-..\..\User\main.c(545): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\..\User\main.c(548): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
   				LCD_ShowString(3, 8 * 3, tx_buf);
-..\..\User\main.c(560): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\..\User\main.c(563): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
   					LCD_ShowString(3, 8 * 3, rx_buf);
-..\..\User\main.c(603): warning:  #1293-D: assignment in condition
+..\..\User\main.c(606): warning:  #1293-D: assignment in condition
   		while (!(keyTemp = KEY_Scan(0))) {//阻塞，用户按下之前，一直寻卡
-..\..\User\main.c(616): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\..\User\main.c(619): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
   					sprintf(&card_id[i * 2], "%02X", SN[i]);
-..\..\User\main.c(621): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\..\User\main.c(624): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
   				LCD_ShowString(120 + 16 * 2 + 8, 60, card_id);
-..\..\User\main.c(626): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\..\User\main.c(629): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
   				DealUpData(card_id, &NB_Send_buf[15], 22);
-..\..\User\main.c(652): warning:  #1293-D: assignment in condition
+..\..\User\main.c(655): warning:  #1293-D: assignment in condition
   					while (keyTemp = KEY_Scan(0) != key5); //等待用户关门
-..\..\User\main.c(726): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\..\User\main.c(729): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
   		strcat(str, tmp);
-..\..\User\main.c(67): warning:  #550-D: variable "collectTimeFlag"  was set but never used
+..\..\User\main.c(68): warning:  #550-D: variable "collectTimeFlag"  was set but never used
   static unsigned int collectTimeFlag;
 ..\..\User\main.c: 19 warnings, 0 errors
 linking...
-Program Size: Code=41498 RO-data=5998 RW-data=484 ZI-data=4212  
+Program Size: Code=42286 RO-data=5998 RW-data=480 ZI-data=4208  
 FromELF: creating hex file...
 "..\..\Output\Fire_LiteOS.axf" - 0 Error(s), 19 Warning(s).
 
